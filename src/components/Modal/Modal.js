@@ -1,23 +1,15 @@
-import React, {useState} from 'react'
-import classes from './Modal.module.css'
+import React from 'react'
+import classes from './Modal.module.css';
+import Button from "../Button/Button";
 import Input from "../Input/Input";
-const Modal = ({ handleShow }) => {
-    const handleChangeInput = (event) => {
-        console.log(event.target.value, 'event');
-    }
-
-    const [inputValue, setInputValue] = useState("")
-
-    const handleInputChange = (event) => {
-        setInputValue(event.target.value);
-    }
+const Modal = ({ handleShow, setNewTask, handleAddTask}) => {
 
     return (
         <>
             <div onClick={handleShow} className={classes.modalWrapper}></div>
             <div className={classes.modalContent}>
-                <input onChange={handleChangeInput} type="text" name="task" />
-                <Input name="modal-input" placeholder="Введите текст" value={inputValue} onChange={handleInputChange} />
+                <Input onChange={(event) => setNewTask(event.target.value)} type="text" name="task"/>
+                <Button handleClick={handleAddTask}><p>Добавить таск</p></Button>
             </div>
         </>
     )

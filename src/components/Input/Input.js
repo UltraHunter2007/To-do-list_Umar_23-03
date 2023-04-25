@@ -1,12 +1,16 @@
 import React from 'react';
 import classes from './Input.module.css'
 
-const Input = ({name, placeholder, onChange}) => {
+function Input({ name, value, placeholder, onChange }) {
     return (
-        <>
-            <input type="text" name={name} placeholder={placeholder} onChange={onChange}/>
-        </>
+        <input
+            type="text"
+            name={name}
+            value={value}
+            placeholder={placeholder}
+            onChange={onChange}
+        />
     );
-};
+}
 
 export default Input;

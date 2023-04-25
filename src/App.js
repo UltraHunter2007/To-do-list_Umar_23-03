@@ -3,56 +3,91 @@ import { useState } from 'react';
 import classes from './App.module.css'
 import Container from './components/Container/Container';
 import Button from './components/Button/Button';
-import List from './components/List/List'
+import TodoCard from "./components/TodoCard/TodoCard";
 import Input from "./components/Input/Input";
 function App() {
 
+    const [ isShow, setIsShow ] = useState(false);
+    const [ newTask, setNewTask ] = useState('');
+    const [ search, setSearch ] = useState('');
+    const [ tasks, setTasks] = useState([
+        {
+            id: 1,
+            title: 'Coding',
+            completed: false
+        },
+        {
+            id: 2,
+            title: 'Eat',
+            completed: false
+        },
+        {
+            id: 3,
+            title: 'Sleep',
+            completed: false
+        },
+        {
+            id: 4,
+            title: 'Coding',
+            completed: false
+        }
+    ]);
+    const handleShow = () => setIsShow(!isShow);
 
-    // const myUseState = (defaultValue) => {
-    //   let state = defaultValue;
-    //   function setState(newState) {
-    //     state = newState
-    //   }
-    //   return [ state, setState ]
-    // }
+    const handleAddTask = () => {
 
-    // const [ state, setState ] = myUseState()
-
-    // const [ count, setCount ] = useState(1);
-    const [ isShow, setIsShow ]  = useState(false)
-
-    const handleShow = () => {
-        setIsShow(!isShow)
-        console.log(isShow, 'isSHow');
+        if (newTask.length < 1) return
+            setTasks((prevState) => [...prevState,
+                {
+                    id: Date.now(),
+                    title: newTask,
+                    completed: false
+                }
+            ])
+            setNewTask('')
+            handleShow();
     }
 
-    // const handleAdd = () => {
-    //   setCount((prevState) => prevState += 1)
-    // }
+    const handleDone = (id) => {
+        const newList = tasks.map(task => {
+            if (task.id === id) {
+                return {...task, completed: !task.completed}
+            }else {
+                return task
+            }
+        })
+        setTasks([...newList])
+    }
 
+    const handleDelete = (id) => {
+        setTasks(tasks.filter((task) => task.id !== id))
+    }
 
-    // const fc1 = (arg1, arg2) => {
-    //   return arg1 + arg2
-    // }
+    const handleSearch = (event) => {
+        setSearch(event.target.value)
+    }
 
-    // fc1(arg1 = 273, arg2 = 10)
+    const filteredTasks = tasks.filter(task => task.title.toLowerCase().includes(search.toLowerCase()));
 
-    const tasks = [
-        { id: 1, task: 'coding'},
-        { id: 2, task: 'eat'},
-        { id: 3, task: 'sleep'}
-    ]
+    console.log(filteredTasks, 'filtered tasks')
+    console.log(tasks, 'tasks')
 
     return (
         <>
             <Container>
-                <Input name="" placeholder="Найти" onChange={(event) => console.log(event.target.value, 'event')} />
                 <div className={classes.wrapper}>
-                    { isShow && <Modal handleShow={handleShow}  /> }
+                    { isShow && <Modal handleShow={handleShow} /> }
+                    { isShow && <Modal handleAddTask={handleAddTask} setNewTask={setNewTask} handleShow={handleShow} /> }
                     <Button handleClick={handleShow}><p>Добавить</p></Button>
+                    <Input name="search" placeholder="Поиск..." value={search} onChange={handleSearch} />
+                    { filteredTasks.map(task =>
+                        <TodoCard
+                        handleDone={handleDone}
+                        handleDelete={handleDelete}
+                        key={task.id}
+                        task={task} />
+                    )}
                 </div>
-                <h2>Список задач</h2>
-                <List tasks={tasks} />
             </Container>
         </>
     );
