@@ -11,10 +11,6 @@
     gap: 5px;
 }
 
-.done {
-    background: green;
-}
-
 button {
     background-color: #0056b3;
     border: none;
@@ -27,4 +23,16 @@ button {
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 4px;
+}
+
+.done {
+    background-color: green;
+}
+
+.delete {
+    background-color: red;
+}
+
+.edit {
+    background-color: yellow;
 }

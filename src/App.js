@@ -10,6 +10,8 @@ function App() {
     const [ isShow, setIsShow ] = useState(false);
     const [ newTask, setNewTask ] = useState('');
     const [ search, setSearch ] = useState('');
+    const [ currentEdit, setCurrentEdit ] = useState('')
+    const [ filter, setFilter ] = useState('all')
     const [ tasks, setTasks] = useState([
         {
             id: 1,
@@ -28,6 +30,11 @@ function App() {
         },
         {
             id: 4,
+            title: 'Coding',
+            completed: false
+        },
+        {
+            id: 5,
             title: 'Coding',
             completed: false
         }
@@ -63,14 +70,33 @@ function App() {
         setTasks(tasks.filter((task) => task.id !== id))
     }
 
+    const handleEdit = (editTask) => {
+        setCurrentEdit(null)
+        const editList = tasks.map(task => {
+            if (task.id === editTask.id) {
+                return editTask
+            }else {
+                return task
+            }
+        })
+        setTasks([...editList])
+    }
+
     const handleSearch = (event) => {
         setSearch(event.target.value)
     }
 
-    const filteredTasks = tasks.filter(task => task.title.toLowerCase().includes(search.toLowerCase()));
+    const handleFilterChange = (event) => {
+        setFilter(event.target.value);
+    }
 
-    console.log(filteredTasks, 'filtered tasks')
-    console.log(tasks, 'tasks')
+    let filteredTasks = tasks;
+
+    if (filter === "completed") {
+        filteredTasks = tasks.filter(task => task.completed);
+    } else if (filter === "incomplete") {
+        filteredTasks = tasks.filter(task => !task.completed);
+    }
 
     return (
         <>
@@ -79,11 +105,20 @@ function App() {
                     { isShow && <Modal handleShow={handleShow} /> }
                     { isShow && <Modal handleAddTask={handleAddTask} setNewTask={setNewTask} handleShow={handleShow} /> }
                     <Button handleClick={handleShow}><p>Добавить</p></Button>
+                    <select value={filter} onChange={handleFilterChange}>
+                        <option value="all">All Tasks</option>
+                        <option value="completed">Completed Tasks</option>
+                        <option value="incomplete">Incomplete Tasks</option>
+                    </select>
                     <Input name="search" placeholder="Поиск..." value={search} onChange={handleSearch} />
+
                     { filteredTasks.map(task =>
                         <TodoCard
                         handleDone={handleDone}
                         handleDelete={handleDelete}
+                        handleSelectEdit={setCurrentEdit}
+                        isEdit={ currentEdit === task.id}
+                        handleEdit={handleEdit}
                         key={task.id}
                         task={task} />
                     )}
