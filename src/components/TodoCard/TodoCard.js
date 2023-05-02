@@ -17,8 +17,8 @@ const TodoCard = ({ task, handleDone, handleDelete, handleSelectEdit, isEdit, ha
             <div className={ task.completed ? `${classes.todoCard} ${classes.done}`: classes.todoCard }>
                 <h3>{task.title}</h3>
                 <button onClick={() => handleDone(task.id)}>Done</button>
-                <button className={classes.delete} onClick={() => handleDelete(task.id)}>Delete</button>
                 <button className={classes.edit} onClick={() => handleSelectEdit(task.id)}>Edit</button>
+                <button className={classes.delete} onClick={() => handleDelete(task.id)}>Delete</button>
             </div>
         );
     }

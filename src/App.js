@@ -1,5 +1,5 @@
 import Modal from './components/Modal/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classes from './App.module.css'
 import Container from './components/Container/Container';
 import Button from './components/Button/Button';
@@ -10,35 +10,17 @@ function App() {
     const [ isShow, setIsShow ] = useState(false);
     const [ newTask, setNewTask ] = useState('');
     const [ search, setSearch ] = useState('');
-    const [ currentEdit, setCurrentEdit ] = useState('')
+    const [ currentEdit, setCurrentEdit ] = useState(null)
     const [ filter, setFilter ] = useState('all')
-    const [ tasks, setTasks] = useState([
-        {
-            id: 1,
-            title: 'Coding',
-            completed: false
-        },
-        {
-            id: 2,
-            title: 'Eat',
-            completed: false
-        },
-        {
-            id: 3,
-            title: 'Sleep',
-            completed: false
-        },
-        {
-            id: 4,
-            title: 'Coding',
-            completed: false
-        },
-        {
-            id: 5,
-            title: 'Coding',
-            completed: false
-        }
-    ]);
+    const [ tasks, setTasks] = useState(() => {
+        const storedTasks = localStorage.getItem('tasks');
+        return storedTasks ? JSON.parse(storedTasks) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }, [tasks]);
+
     const handleShow = () => setIsShow(!isShow);
 
     const handleAddTask = () => {
@@ -90,6 +72,11 @@ function App() {
         setFilter(event.target.value);
     }
 
+    const handleClearAll = () => {
+        setTasks([]);
+        localStorage.removeItem('tasks');
+    }
+
     let filteredTasks = tasks;
 
     if (filter === "completed") {
@@ -104,13 +91,16 @@ function App() {
                 <div className={classes.wrapper}>
                     { isShow && <Modal handleShow={handleShow} /> }
                     { isShow && <Modal handleAddTask={handleAddTask} setNewTask={setNewTask} handleShow={handleShow} /> }
-                    <Button handleClick={handleShow}><p>Добавить</p></Button>
+                    <div className={classes.buttons}>
+                        <Button handleClick={handleShow}><p>Add Task</p></Button>
+                        <Button handleClick={handleClearAll}><p>Clear All</p></Button>
+                    </div>
                     <select value={filter} onChange={handleFilterChange}>
                         <option value="all">All Tasks</option>
                         <option value="completed">Completed Tasks</option>
                         <option value="incomplete">Incomplete Tasks</option>
                     </select>
-                    <Input name="search" placeholder="Поиск..." value={search} onChange={handleSearch} />
+                    <Input name="search" placeholder="Search..." value={search} onChange={handleSearch} />
 
                     { filteredTasks.map(task =>
                         <TodoCard

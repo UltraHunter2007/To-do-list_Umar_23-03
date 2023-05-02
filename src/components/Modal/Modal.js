@@ -9,7 +9,7 @@ const Modal = ({ handleShow, setNewTask, handleAddTask}) => {
             <div onClick={handleShow} className={classes.modalWrapper}></div>
             <div className={classes.modalContent}>
                 <Input onChange={(event) => setNewTask(event.target.value)} type="text" name="task"/>
-                <Button handleClick={handleAddTask}><p>Добавить таск</p></Button>
+                <Button handleClick={handleAddTask}><p>Confirm</p></Button>
             </div>
         </>
     )
